@@ -42,7 +42,7 @@ fi
 
 WEBHOOK_SIGNATURE=$(echo -n "$WEBHOOK_DATA" | openssl sha1 -hmac "$webhook_secret" -binary | xxd -p)
 
-if [ -n "$webhook_auth" ]; then
+if [ -n "$WEBHOOK_SIGNATURE" ]; then
     curl -X POST -H "content-type: $CONTENT_TYPE" \
                  -H "User-Agent: User-Agent: GitHub-Hookshot/610258e" \
                  -H "Expect: " \
@@ -51,7 +51,5 @@ if [ -n "$webhook_auth" ]; then
                  -H "X-GitHub-Event: $GITHUB_EVENT_NAME" \
                  -D - \
                  --data "$WEBHOOK_DATA" -u $webhook_auth $webhook_url
-else
-    curl -X POST -H "content-type: $CONTENT_TYPE" -H "x-hub-signature: sha1=$WEBHOOK_SIGNATURE" -H "x-github-event: $GITHUB_EVENT_NAME" --data "$WEBHOOK_DATA" $webhook_url
 fi
 
