@@ -31,7 +31,7 @@ else
 
    
     if [ -n "$data" ]; then
-        COMPACT_JSON=$(echo -n "$data" | /jq -c '')
+        COMPACT_JSON=$(echo -n "$data" | jq -c '')
         WEBHOOK_DATA="$COMPACT_JSON"
     else
         DATA_JSON="\"repository\":\"$GITHUB_REPOSITORY\",\"ref\":\"$GITHUB_REF\",\"commit\":\"$GITHUB_SHA\",\"trigger\":\"$GITHUB_EVENT_NAME\",\"workflow\":\"$GITHUB_WORKFLOW\""
