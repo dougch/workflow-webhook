@@ -32,7 +32,7 @@ else
    
     if [ -n "$GITHUB_EVENT_PATH" ]; then
         #COMPACT_JSON=$(echo -n "$data" | jq -c '')
-        WEBHOOK_DATA=$(jq -c $GITHUB_EVENT_PATH)
+        WEBHOOK_DATA=$(jq -c . $GITHUB_EVENT_PATH)
     else
         DATA_JSON="\"repository\":\"$GITHUB_REPOSITORY\",\"ref\":\"$GITHUB_REF\",\"commit\":\"$GITHUB_SHA\",\"trigger\":\"$GITHUB_EVENT_NAME\",\"workflow\":\"$GITHUB_WORKFLOW\""
         WEBHOOK_DATA="{$DATA_JSON}"
