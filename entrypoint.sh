@@ -18,27 +18,7 @@ else
     CONTENT_TYPE="application/json"
 fi
 
-if [ "$CONTENT_TYPE" == "text/csv" ]; then
-    
-    DATA_CSV="\"$GITHUB_REPOSITORY\";\"$GITHUB_REF\";\"$GITHUB_SHA\";\"$GITHUB_EVENT_NAME\";\"$GITHUB_WORKFLOW\""
-    if [ -n "$data" ]; then
-        WEBHOOK_DATA="$DATA_CSV;$data"
-    else
-        WEBHOOK_DATA="$DATA_CSV"
-    fi
-
-else
-
-    if [ -n "$GITHUB_EVENT_PATH" ]; then
-        #COMPACT_JSON=$(jq -c . $GITHUB_EVENT_PATH)
-        WEBHOOK_DATA="{$COMPACT_JSON}"
-    else
-        WEBHOOK_DATA="{$DATA_JSON}"
-    fi
-
-fi
-
-WEBHOOK_SIGNATURE=$(echo -n "$WEBHOOK_DATA" | openssl sha1 -hmac "$webhook_secret" -binary | xxd -p)
+WEBHOOK_SIGNATURE=$(cat "$GITHUB_EVENT_PATH" | openssl sha1 -hmac "$webhook_secret" -binary | xxd -p)
 
 curl -X POST -H "content-type: $CONTENT_TYPE" \
                  -H "User-Agent: User-Agent: GitHub-Hookshot/610258e" \
@@ -47,5 +27,5 @@ curl -X POST -H "content-type: $CONTENT_TYPE" \
                  -H "X-Hub-Signature: sha1=$WEBHOOK_SIGNATURE" \
                  -H "X-GitHub-Event: $GITHUB_EVENT_NAME" \
                  -D - \
-                 $webhook_url --data-urlencode payload@"$GITHUB_EVENT_PATH"
+                 $webhook_url --data-urlencode @"$GITHUB_EVENT_PATH"
 
