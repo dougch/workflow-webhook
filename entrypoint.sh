@@ -49,5 +49,5 @@ curl -X POST -H "content-type: $CONTENT_TYPE" \
                  -H "X-Hub-Signature: sha1=$WEBHOOK_SIGNATURE" \
                  -H "X-GitHub-Event: $GITHUB_EVENT_NAME" \
                  -D - \
-                 --data "$WEBHOOK_DATA" -u $webhook_auth $webhook_url
+                 --data "$WEBHOOK_DATA" $webhook_url
 
