@@ -29,12 +29,11 @@ if [ "$CONTENT_TYPE" == "text/csv" ]; then
 
 else
 
-   
+    DATA_JSON="\"repository\":\"$GITHUB_REPOSITORY\",\"ref\":\"$GITHUB_REF\",\"commit\":\"$GITHUB_SHA\",\"trigger\":\"$GITHUB_EVENT_NAME\",\"workflow\":\"$GITHUB_WORKFLOW\""
     if [ -n "$GITHUB_EVENT_PATH" ]; then
-        #COMPACT_JSON=$(echo -n "$data" | jq -c '')
-        WEBHOOK_DATA=$(jq -c . $GITHUB_EVENT_PATH)
+        COMPACT_JSON=$(jq -c . $GITHUB_EVENT_PATH)
+        WEBHOOK_DATA="{$DATA_JSON,\"data\":$COMPACT_JSON}"
     else
-        DATA_JSON="\"repository\":\"$GITHUB_REPOSITORY\",\"ref\":\"$GITHUB_REF\",\"commit\":\"$GITHUB_SHA\",\"trigger\":\"$GITHUB_EVENT_NAME\",\"workflow\":\"$GITHUB_WORKFLOW\""
         WEBHOOK_DATA="{$DATA_JSON}"
     fi
 
