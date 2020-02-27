@@ -29,10 +29,9 @@ if [ "$CONTENT_TYPE" == "text/csv" ]; then
 
 else
 
-    DATA_JSON="\"repository\":\"$GITHUB_REPOSITORY\",\"ref\":\"$GITHUB_REF\",\"commit\":\"$GITHUB_SHA\",\"trigger\":\"$GITHUB_EVENT_NAME\",\"workflow\":\"$GITHUB_WORKFLOW\""
     if [ -n "$GITHUB_EVENT_PATH" ]; then
-        COMPACT_JSON=$(jq -c . $GITHUB_EVENT_PATH)
-        WEBHOOK_DATA="{$DATA_JSON,\"data\":$COMPACT_JSON}"
+        #COMPACT_JSON=$(jq -c . $GITHUB_EVENT_PATH)
+        WEBHOOK_DATA="{$COMPACT_JSON}"
     else
         WEBHOOK_DATA="{$DATA_JSON}"
     fi
@@ -48,5 +47,5 @@ curl -X POST -H "content-type: $CONTENT_TYPE" \
                  -H "X-Hub-Signature: sha1=$WEBHOOK_SIGNATURE" \
                  -H "X-GitHub-Event: $GITHUB_EVENT_NAME" \
                  -D - \
-                 --data "$WEBHOOK_DATA" $webhook_url
+                 $webhook_url --data-urlencode payload@"$GITHUB_EVENT_PATH"
 
